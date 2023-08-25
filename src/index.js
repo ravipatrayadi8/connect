@@ -4,6 +4,8 @@ const hbs = require("hbs")
 const collection = require("./mongodb")
 const app = express()
 const { Collection } = require('collectionsjs');
+const items = []
+
 
 app.use(express.json())
 app.use(express.urlencoded({extended:false})) 
@@ -49,9 +51,7 @@ function createCounter(items) {
       }
       return cost ; 
 }
-
-
-const items = [] 
+ 
 app.post("/home" , async (req,res) =>{   
     items.push(req.body.item) 
     const counter = createCounter(items);
