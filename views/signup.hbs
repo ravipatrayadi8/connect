@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>Sign up</title>
+</head>
+<body>
+    <h1>Sign Up</h1>
+
+    <form action="/signup" method="post">
+    <input type="text" name="name" placeholder="Name">
+    <input type="password" name="password" placeholder="Password">
+    <label for="userType">User Type:</label>
+        <select name="userType" id="userType">
+            <option value="clerk">Clerk</option>
+            <option value="super">Supervisor</option>
+        </select>
+    <input type="submit">
+    </form>
+</body>
+</html>
