@@ -5,18 +5,22 @@
 </head>
 <body>
     <h1>Home Page</h1>
-    <a href="./cart.hbs"><button>Go to Cart</button></a>
-    <h1>Add Item to Cart</h1>
+    <hr>
+    <h1>Cart</h1>
+
     <form action="/home" method="post">
-        <button type="submit" name="item" value="banana|2">Add Banana - $2</button>
-        <button type="submit" name="item" value="mango|3">Add Mango - $3</button>
-        <button type="submit" name="item" value="apple|1">Add Apple - $1</button>
-        <button type="submit" name="item" value="kiwi|4">Add Kiwi - $4</button>
+        <button type="submit" name="item" value="banana|-2">-</button>  Banana <button type="submit" name="item" value="banana|2">+</button> 
+        Quantity : {{counter.banana.[2]}}  
         <hr>
-        <button type="submit" name="item" value="banana|-2">Dele Banana - $2</button>
-        <button type="submit" name="item" value="mango|-3">Dele Mango - $3</button>
-        <button type="submit" name="item" value="apple|-1">Dele Apple - $1</button>
-        <button type="submit" name="item" value="kiwi|-4">Dele Kiwi - $4</button>
+        <button type="submit" name="item" value="mango|-3">-</button> Mango  <button type="submit" name="item" value="mango|3">+</button>
+        Quantity : {{counter.mango.[3]}}
+        <hr> 
+        <button type="submit" name="item" value="apple|-1">-</button> Apple  <button type="submit" name="item" value="apple|1">+</button>
+        Quantity : {{counter.apple.[1]}}
+        <hr>
+        <button type="submit" name="item" value="kiwi|-4">-</button> Kiwi <button type="submit" name="item" value="kiwi|4">+</button>
+        Quantity : {{counter.kiwi.[4]}}
+        <hr>
     </form>
     </body>
 </html>

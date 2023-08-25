@@ -13,6 +13,7 @@
     "collectionsjs": "^0.3.2",
     "ejs": "^3.1.9",
     "express": "^4.18.2",
+    "express-session": "^1.17.3",
     "hbs": "^4.2.0",
     "mongodb": "^5.8.1",
     "mongoose": "^7.4.4",

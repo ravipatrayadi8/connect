@@ -16,6 +16,10 @@ app.get("/" , (req,res) =>{
     res.render("login")
 });
 
+app.get("/home" , (req,res) =>{
+    res.render("home") ; 
+});
+
 app.get("/login", (req, res) => {
     res.render("login"); 
 });
@@ -51,17 +55,25 @@ function createCounter(items) {
       }
       return cost ; 
 }
- 
 app.post("/home" , async (req,res) =>{   
     items.push(req.body.item) 
     const counter = createCounter(items);
     const counterObject = Object.fromEntries(counter);
+    const processedCounter = {};
+    for (const key in counterObject) {
+    const parts = key.split('|');
+    if (parts.length === 2) {
+        const fruit = parts[0];
+        const quantity = parts[1];
+        processedCounter[fruit] = processedCounter[fruit] || {};
+        processedCounter[fruit][quantity] = counterObject[key];
+    }
+    }
+    console.log(counterObject)
     const total = findCost(counterObject)
     console.log(total) 
-    res.render("home") 
+    res.render("home", { counter: processedCounter })  
 }) 
-
-
 
 
 app.post("/signup" , async (req,res) => {
