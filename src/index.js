@@ -2,11 +2,15 @@ const express = require("express")
 const path = require("path") 
 const hbs = require("hbs")
 const collection = require("./mongodb")
-const app = express()
+const session = require("express-session")
+const config = require("../config/config")
+
+
 const { Collection } = require('collectionsjs');
 const items = []
+const app = express()
 
-
+app.use(session({secret:config.sessionSecret}))
 app.use(express.json())
 app.use(express.urlencoded({extended:false})) 
 
@@ -92,11 +96,12 @@ app.post("/signup" , async (req,res) => {
 app.post("/login" , async (req,res) => {
     try{
         const user = await collection.findOne({name:req.body.name})
-        
+        console.log(user) 
         if (user.password === req.body.password) {
             if (user.userType === 'super') {                
                 res.render("super");
             } else if (user.userType === 'clerk') {
+                
                 res.render("home");
             } else {
                 res.send("User Does not exist");
