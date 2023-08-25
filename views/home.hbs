@@ -5,5 +5,18 @@
 </head>
 <body>
     <h1>Home Page</h1>
-</body>
+    <a href="./cart.hbs"><button>Go to Cart</button></a>
+    <h1>Add Item to Cart</h1>
+    <form action="/home" method="post">
+        <button type="submit" name="item" value="banana|2">Add Banana - $2</button>
+        <button type="submit" name="item" value="mango|3">Add Mango - $3</button>
+        <button type="submit" name="item" value="apple|1">Add Apple - $1</button>
+        <button type="submit" name="item" value="kiwi|4">Add Kiwi - $4</button>
+        <hr>
+        <button type="submit" name="item" value="banana|-2">Dele Banana - $2</button>
+        <button type="submit" name="item" value="mango|-3">Dele Mango - $3</button>
+        <button type="submit" name="item" value="apple|-1">Dele Apple - $1</button>
+        <button type="submit" name="item" value="kiwi|-4">Dele Kiwi - $4</button>
+    </form>
+    </body>
 </html>

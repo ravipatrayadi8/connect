@@ -1,0 +1,45 @@
+{
+  "name": "collectionsjs",
+  "version": "0.3.2",
+  "repository": "https://github.com/logaretm/collectionsjs",
+  "description": "A Collection class for working with JavaScript arrays similiar to Laravel's collections",
+  "main": "dist/collection.js",
+  "scripts": {
+    "dev": "webpack --progress --colors --watch",
+    "build": "webpack && cross-env NODE_ENV=production webpack -p",
+    "test": "nyc ava --colors",
+    "test:watch": "ava --watch",
+    "lint": "eslint ./src ./test",
+    "doc": "esdoc -c .esdoc.json",
+    "cover": "nyc report --reporter=lcov > coverage.lcov && codecov"
+  },
+  "ava": {
+    "require": [
+      "babel-register"
+    ]
+  },
+  "keywords": [
+    "collections",
+    "arrays",
+    "laravel"
+  ],
+  "author": "Abdelrahman Awad",
+  "license": "MIT",
+  "dependencies": {},
+  "devDependencies": {
+    "ava": "^0.15.2",
+    "babel-loader": "^6.2.4",
+    "babel-plugin-add-module-exports": "^0.2.1",
+    "babel-preset-es2015": "^6.9.0",
+    "cross-env": "^1.0.8",
+    "esdoc": "^0.4.7",
+    "eslint": "^2.13.1",
+    "eslint-config-airbnb-base": "^3.0.1",
+    "eslint-loader": "^1.3.0",
+    "eslint-plugin-import": "^1.9.2",
+    "istanbul": "^0.4.4",
+    "nyc": "^6.6.1",
+    "webpack": "^1.13.1",
+    "webpack-validator": "^2.2.0"
+  }
+}
