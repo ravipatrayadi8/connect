@@ -9,8 +9,6 @@ mongoose.connect("mongodb://127.0.0.1:27017/Logincred")
         console.error("Mongodb connection error:", error);
     });
 
-
-
 const LogInSchema = new mongoose.Schema({
     name :{
         type:String , 
@@ -25,6 +23,32 @@ const LogInSchema = new mongoose.Schema({
         required: true
     }    
 })
+
+
+const cartSchema = new mongoose.Schema({
+    userId: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: 'Logincred', 
+      required: true
+    },
+    appleCount: {
+      type: Number,
+      default: 0
+    },
+    bananaCount: {
+      type: Number,
+      default: 0
+    },
+    orangeCount: {
+      type: Number,
+      default: 0
+    },
+    grapeCount: {
+      type: Number,
+      default: 0
+    }
+});
+
 
 const collection = new mongoose.model("LoginCollection" , LogInSchema) 
  

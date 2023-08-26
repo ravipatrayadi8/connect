@@ -3,34 +3,44 @@ const path = require("path")
 const hbs = require("hbs")
 const collection = require("./mongodb")
 const session = require("express-session")
-const config = require("../config/config")
+const sessionSecret = "temp" 
+const auth = require("../middleware/auth")
 
-
-const { Collection } = require('collectionsjs');
+const { Collection } = require('collectionsjs')
 const items = []
 const app = express()
 
-app.use(session({secret:config.sessionSecret}))
+app.use(session({secret:sessionSecret}))
 app.use(express.json())
 app.use(express.urlencoded({extended:false})) 
 
 app.set("view engine" , "hbs") 
 
-app.get("/" , (req,res) =>{
-    res.render("login")
+app.get("/" , auth.isLogout,  (req,res) =>{
+    res.redirect("login")
 });
 
-app.get("/home" , (req,res) =>{
+app.get("/home" , auth.isLogin ,(req,res) =>{
     res.render("home") ; 
 });
 
-app.get("/login", (req, res) => {
-    res.render("login"); 
+app.get("/login", auth.isLogout,(req,res) =>{
+    res.render("login") ; 
 });
 
-app.get("/signup", (req, res) => {
-    res.render("signup");
+app.get("/logout" , auth.isLogin ,  async(req,res) =>{
+    try{
+        req.session.destroy() 
+        res.render("login") 
+    }
+    catch(error){
+        console.log(error.message) 
+    }
 });
+
+app.get("/signup", auth.isLogout,(req,res) =>{
+    res.render("signup") ; 
+}); 
 
 function createCounter(items) {
     const counter = new Map();
@@ -59,6 +69,8 @@ function createCounter(items) {
       }
       return cost ; 
 }
+
+
 app.post("/home" , async (req,res) =>{   
     items.push(req.body.item) 
     const counter = createCounter(items);
@@ -101,7 +113,8 @@ app.post("/login" , async (req,res) => {
             if (user.userType === 'super') {                
                 res.render("super");
             } else if (user.userType === 'clerk') {
-                
+                req.session.user_id = user._id 
+                console.log(req.session.user_id) 
                 res.render("home");
             } else {
                 res.send("User Does not exist");
@@ -116,6 +129,9 @@ app.post("/login" , async (req,res) => {
     }
 
 })
+
+
+
 
 app.listen(3000 , () =>{
     console.log("port connected") ;  
