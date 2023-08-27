@@ -9,7 +9,7 @@ const sessionSecret = "temp"
 const auth = require("../middleware/auth")
 
 const { Collection } = require('collectionsjs')
-const items = []
+let items = [] 
 const app = express()
 
 app.use(session({secret:sessionSecret}))
@@ -32,7 +32,8 @@ app.get("/login", auth.isLogout,(req,res) =>{
 
 app.get("/logout" , auth.isLogin ,  async(req,res) =>{
     try{
-        req.session.destroy() 
+        req.session.destroy()
+        items = []  
         res.render("login") 
     }
     catch(error){
@@ -73,25 +74,97 @@ function createCounter(items) {
 }
 
 
-app.post("/home" , async (req,res) =>{
-    console.log(req.session.user_id) 
-    const userId = req.session.user_id 
-    const existingDetail = await details.findOne({ userId });
+// items.push(req.body.item) 
+    // const counter = createCounter(items);
+    // const counterObject = Object.fromEntries(counter);
+    // console.log(counterObject)
+    // const total = findCost(counterObject)
+    // console.log(total)
 
-    if (!existingDetail) {
-      const ccart = {
-        userId: req.session.user_id
-      };
-      await details.insertMany([ccart]);
-    }
-    items.push(req.body.item) 
-    const counter = createCounter(items);
-    const counterObject = Object.fromEntries(counter);
-    console.log(counterObject)
-    const total = findCost(counterObject)
-    console.log(total) 
-    res.render("home")  
-}) 
+    app.post("/home", async (req, res) => {
+        console.log(req.session.user_id);
+      
+        const userId = req.session.user_id;
+        
+        // Find existing user cart or create a new one
+        let userCart = await details.findOne({ userId });
+        if (!userCart) {
+          const ccart = {
+            userId: req.session.user_id
+          };
+          userCart = new details(ccart);
+          await userCart.save();
+        }
+      
+        items.push(req.body.item);
+        const counter = createCounter(items);
+        const counterObject = Object.fromEntries(counter);
+        console.log(counterObject);
+        const total = findCost(counterObject);
+        console.log(total);
+      
+        // Update the fruit counts in the user's cart
+        for (const key in counterObject) {
+          if (counterObject.hasOwnProperty(key)) {
+            const [fruit, index] = key.split('|'); 
+            const count = counterObject[key];          
+            userCart[`${fruit}Count`] = count;
+          }
+        }
+      
+        // Save the updated cart back to the database
+        try {
+          const updatedCart = await userCart.save();
+          console.log('Updated cart:', updatedCart);
+        } catch (error) {
+          console.error('Error updating cart:', error);
+        }
+        res.render("home");
+      });
+      
+
+
+// app.post("/home" , async (req,res) =>{
+//     console.log(req.session.user_id) 
+    
+//     const userId = req.session.user_id
+//     const existingDetail = await details.findOne({ userId });
+
+//     if (!existingDetail) {
+//       const ccart = {
+//         userId: req.session.user_id
+//       };
+//       await details.insertMany([ccart]);
+//     }    
+    
+//     details.findOne({ userId }).then(userCart => {
+//     if (userCart) {
+//     items.push(req.body.item) 
+//     const counter = createCounter(items);
+//     const counterObject = Object.fromEntries(counter);
+//     console.log(counterObject)
+//     const total = findCost(counterObject)
+//     console.log(total)
+//       for (const key in counterObject) {
+//         if (counterObject.hasOwnProperty(key)) {
+//           const [fruit, index] = key.split('|') 
+//           const count = counterObject[key]          
+//           userCart[`${fruit}Count`] = count;
+//         }
+//       }
+//       return userCart.save();
+//     } else {
+//       console.log('User cart not found.');
+//     }
+// }) 
+// .then(updatedCart => {
+//     console.log('Updated cart:', updatedCart);
+//   })
+//   .catch(error => {
+//     console.error('Error updating cart:', error);
+//   })
+//     res.render("home")  
+// }) 
 
 
 app.post("/signup" , async (req,res) => {
