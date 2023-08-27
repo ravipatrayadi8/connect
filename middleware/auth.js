@@ -3,7 +3,7 @@ const isLogin = async(req,res,next) =>{
     try{
         if(req.session.user_id){}
         else{
-            res.render('/') 
+            res.render('login') 
         }
         next() 
     }

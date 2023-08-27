@@ -24,32 +24,35 @@ const LogInSchema = new mongoose.Schema({
     }    
 })
 
-
 const cartSchema = new mongoose.Schema({
     userId: {
       type: mongoose.Schema.Types.ObjectId,
       ref: 'Logincred', 
       required: true
     },
-    appleCount: {
-      type: Number,
-      default: 0
-    },
     bananaCount: {
       type: Number,
       default: 0
     },
-    orangeCount: {
+    
+    mangoCount: {
       type: Number,
       default: 0
     },
-    grapeCount: {
+    appleCount: {
+      type: Number,
+      default: 0
+    },
+    kiwiCount: {
       type: Number,
       default: 0
     }
 });
 
 
-const collection = new mongoose.model("LoginCollection" , LogInSchema) 
+const lcred = new mongoose.model("LoginCollection" , LogInSchema) 
+const cart = new mongoose.model("CartDetails" , cartSchema)
  
-module.exports = collection 
+module.exports = {
+  lcred , cart  
+}

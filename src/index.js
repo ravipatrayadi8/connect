@@ -2,6 +2,8 @@ const express = require("express")
 const path = require("path") 
 const hbs = require("hbs")
 const collection = require("./mongodb")
+const log = collection.lcred
+const details = collection.cart 
 const session = require("express-session")
 const sessionSecret = "temp" 
 const auth = require("../middleware/auth")
@@ -17,7 +19,7 @@ app.use(express.urlencoded({extended:false}))
 app.set("view engine" , "hbs") 
 
 app.get("/" , auth.isLogout,  (req,res) =>{
-    res.redirect("login")
+    res.render("login")
 });
 
 app.get("/home" , auth.isLogin ,(req,res) =>{
@@ -71,24 +73,24 @@ function createCounter(items) {
 }
 
 
-app.post("/home" , async (req,res) =>{   
+app.post("/home" , async (req,res) =>{
+    console.log(req.session.user_id) 
+    const userId = req.session.user_id 
+    const existingDetail = await details.findOne({ userId });
+
+    if (!existingDetail) {
+      const ccart = {
+        userId: req.session.user_id
+      };
+      await details.insertMany([ccart]);
+    }
     items.push(req.body.item) 
     const counter = createCounter(items);
     const counterObject = Object.fromEntries(counter);
-    const processedCounter = {};
-    for (const key in counterObject) {
-    const parts = key.split('|');
-    if (parts.length === 2) {
-        const fruit = parts[0];
-        const quantity = parts[1];
-        processedCounter[fruit] = processedCounter[fruit] || {};
-        processedCounter[fruit][quantity] = counterObject[key];
-    }
-    }
     console.log(counterObject)
     const total = findCost(counterObject)
     console.log(total) 
-    res.render("home", { counter: processedCounter })  
+    res.render("home")  
 }) 
 
 
@@ -100,20 +102,20 @@ app.post("/signup" , async (req,res) => {
         userType: req.body.userType
     }
 
-    await collection.insertMany([data])
+    await log.insertMany([data])
     res.render("login") 
 
 })
 
 app.post("/login" , async (req,res) => {
     try{
-        const user = await collection.findOne({name:req.body.name})
-        console.log(user) 
+        const user = await log.findOne({name:req.body.name})
         if (user.password === req.body.password) {
             if (user.userType === 'super') {                
                 res.render("super");
             } else if (user.userType === 'clerk') {
                 req.session.user_id = user._id 
+                console.log("session")
                 console.log(req.session.user_id) 
                 res.render("home");
             } else {
@@ -132,7 +134,19 @@ app.post("/login" , async (req,res) => {
 
 
 
-
 app.listen(3000 , () =>{
     console.log("port connected") ;  
 }) ;  
+
+
+
+    // const processedCounter = {};
+    // for (const key in counterObject) {
+    // const parts = key.split('|');
+    // if (parts.length === 2) {
+    //     const fruit = parts[0];
+    //     const quantity = parts[1];
+    //     processedCounter[fruit] = processedCounter[fruit] || {};
+    //     processedCounter[fruit][quantity] = counterObject[key];
+    // }
+    // }
