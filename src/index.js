@@ -1,132 +1,138 @@
-const express = require("express") 
-const path = require("path") 
+const express = require("express")
+const path = require("path")
 const hbs = require("hbs")
 const collection = require("./mongodb")
 const log = collection.lcred
-const details = collection.cart 
+const details = collection.cart
 const session = require("express-session")
-const sessionSecret = "temp" 
+const sessionSecret = "temp"
 const auth = require("../middleware/auth")
 
-const { Collection } = require('collectionsjs')
-let items = [] 
+const {
+    Collection
+} = require('collectionsjs')
+let items = []
 const app = express()
 
-app.use(session({secret:sessionSecret}))
+app.use(session({
+    secret: sessionSecret
+}))
 app.use(express.json())
-app.use(express.urlencoded({extended:false})) 
+app.use(express.urlencoded({
+    extended: false
+}))
 
-app.set("view engine" , "hbs") 
+app.set("view engine", "hbs")
 
-app.get("/" , auth.isLogout,  (req,res) =>{
+app.get("/", auth.isLogout, (req, res) => {
     res.render("login")
 });
 
-app.get("/home" , auth.isLogin ,(req,res) =>{
-    res.render("home") ; 
+app.get("/home", auth.isLogin, (req, res) => {
+    res.render("home");
 });
 
-app.get("/login", auth.isLogout,(req,res) =>{
-    res.render("login") ; 
+app.get("/login", auth.isLogout, (req, res) => {
+    res.render("login");
 });
 
-app.get("/logout" , auth.isLogin ,  async(req,res) =>{
-    try{
+app.get("/logout", auth.isLogin, async (req, res) => {
+    try {
         req.session.destroy()
-        items = []  
-        res.render("login") 
-    }
-    catch(error){
-        console.log(error.message) 
+        items = []
+        res.render("login")
+    } catch (error) {
+        console.log(error.message)
     }
 });
 
-app.get("/signup", auth.isLogout,(req,res) =>{
-    res.render("signup") ; 
-}); 
+app.get("/signup", auth.isLogout, (req, res) => {
+    res.render("signup");
+});
 
 function createCounter(items) {
     const counter = new Map();
 
     for (const item of items) {
-        const [fruit,price] = item.split('|')
-        if ( price > 0 ){
+        const [fruit, price] = item.split('|')
+        if (price > 0) {
             counter.set(item, (counter.get(item) || 0) + 1);
-        }
-        else{
-            const newitem = fruit + '|' + (-price) 
+        } else {
+            const newitem = fruit + '|' + (-price)
             if (counter.get(newitem) > 0) {
                 counter.set(newitem, counter.get(newitem) - 1);
             }
         }
     }
     return counter;
-  }
+}
 
-  function findCost(counterObject) {
-    let cost = 0 ;  
+function findCost(counterObject) {
+    let cost = 0;
     for (const key in counterObject) {
-        const [item, price] = key.split('|')         
+        const [item, price] = key.split('|')
         const itemCount = counterObject[key]
-        cost += (price * itemCount)  
-      }
-      return cost ; 
+        cost += (price * itemCount)
+    }
+    return cost;
 }
 
 
 // items.push(req.body.item) 
-    // const counter = createCounter(items);
-    // const counterObject = Object.fromEntries(counter);
-    // console.log(counterObject)
-    // const total = findCost(counterObject)
-    // console.log(total)
+// const counter = createCounter(items);
+// const counterObject = Object.fromEntries(counter);
+// console.log(counterObject)
+// const total = findCost(counterObject)
+// console.log(total)
 
-    app.post("/home", async (req, res) => {
-        console.log(req.session.user_id);
-      
-        const userId = req.session.user_id;
-        
-        // Find existing user cart or create a new one
-        let userCart = await details.findOne({ userId });
-        if (!userCart) {
-          const ccart = {
+app.post("/home", async (req, res) => {
+    console.log(req.session.user_id);
+
+    const userId = req.session.user_id;
+
+    // Find existing user cart or create a new one
+    let userCart = await details.findOne({
+        userId
+    });
+    if (!userCart) {
+        const ccart = {
             userId: req.session.user_id
-          };
-          userCart = new details(ccart);
-          await userCart.save();
-        }
-      
-        items.push(req.body.item);
-        const counter = createCounter(items);
-        const counterObject = Object.fromEntries(counter);
-        console.log(counterObject);
-        const total = findCost(counterObject);
-        console.log(total);
-      
-        // Update the fruit counts in the user's cart
-        for (const key in counterObject) {
-          if (counterObject.hasOwnProperty(key)) {
-            const [fruit, index] = key.split('|'); 
-            const count = counterObject[key];          
+        };
+        userCart = new details(ccart);
+        await userCart.save();
+    }
+
+    items.push(req.body.item);
+    const counter = createCounter(items);
+    const counterObject = Object.fromEntries(counter);
+    console.log(counterObject);
+    const total = findCost(counterObject);
+    console.log(total);
+
+    // Update the fruit counts in the user's cart
+    for (const key in counterObject) {
+        if (counterObject.hasOwnProperty(key)) {
+            const [fruit, index] = key.split('|');
+            const count = counterObject[key];
             userCart[`${fruit}Count`] = count;
-          }
         }
-      
-        // Save the updated cart back to the database
-        try {
-          const updatedCart = await userCart.save();
-          console.log('Updated cart:', updatedCart);
-        } catch (error) {
-          console.error('Error updating cart:', error);
-        }
-        res.render("home");
-      });
-      
+    }
+
+    // Save the updated cart back to the database
+    try {
+        const updatedCart = await userCart.save();
+        console.log('Updated cart:', updatedCart);
+    } catch (error) {
+        console.error('Error updating cart:', error);
+    }
+    res.render("home");
+});
+
 
 
 // app.post("/home" , async (req,res) =>{
 //     console.log(req.session.user_id) 
-    
+
 //     const userId = req.session.user_id
 //     const existingDetail = await details.findOne({ userId });
 
@@ -136,7 +142,7 @@ function createCounter(items) {
 //       };
 //       await details.insertMany([ccart]);
 //     }    
-    
+
 //     details.findOne({ userId }).then(userCart => {
 //     if (userCart) {
 //     items.push(req.body.item) 
@@ -167,59 +173,59 @@ function createCounter(items) {
 // }) 
 
 
-app.post("/signup" , async (req,res) => {
+app.post("/signup", async (req, res) => {
 
     const data = {
-        name:req.body.name , 
-        password : req.body.password ,  
+        name: req.body.name,
+        password: req.body.password,
         userType: req.body.userType
     }
 
     await log.insertMany([data])
-    res.render("login") 
+    res.render("login")
 
 })
 
-app.post("/login" , async (req,res) => {
-    try{
-        const user = await log.findOne({name:req.body.name})
+app.post("/login", async (req, res) => {
+    try {
+        const user = await log.findOne({
+            name: req.body.name
+        })
         if (user.password === req.body.password) {
-            if (user.userType === 'super') {                
+            if (user.userType === 'super') {
                 res.render("super");
             } else if (user.userType === 'clerk') {
-                req.session.user_id = user._id 
+                req.session.user_id = user._id
                 console.log("session")
-                console.log(req.session.user_id) 
+                console.log(req.session.user_id)
                 res.render("home");
             } else {
                 res.send("User Does not exist");
             }
-        } 
-        else {
+        } else {
             res.send("Wrong Password or Username");
         }
-    }
-    catch (error) {
-        res.send("Can't find the User") ; 
+    } catch (error) {
+        res.send("Can't find the User");
     }
 
 })
 
 
 
-app.listen(3000 , () =>{
-    console.log("port connected") ;  
-}) ;  
+app.listen(3000, () => {
+    console.log("port connected");
+});
 
 
 
-    // const processedCounter = {};
-    // for (const key in counterObject) {
-    // const parts = key.split('|');
-    // if (parts.length === 2) {
-    //     const fruit = parts[0];
-    //     const quantity = parts[1];
-    //     processedCounter[fruit] = processedCounter[fruit] || {};
-    //     processedCounter[fruit][quantity] = counterObject[key];
-    // }
-    // }
+// const processedCounter = {};
+// for (const key in counterObject) {
+// const parts = key.split('|');
+// if (parts.length === 2) {
+//     const fruit = parts[0];
+//     const quantity = parts[1];
+//     processedCounter[fruit] = processedCounter[fruit] || {};
+//     processedCounter[fruit][quantity] = counterObject[key];
+// }
+// }
