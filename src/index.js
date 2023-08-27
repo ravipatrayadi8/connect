@@ -3,7 +3,6 @@ const path = require("path")
 const hbs = require("hbs")
 const collection = require("./mongodb")
 const log = collection.lcred
-const details = collection.cart
 const session = require("express-session")
 const sessionSecret = "temp"
 const auth = require("../middleware/auth")
@@ -40,6 +39,7 @@ app.get("/logout", auth.isLogin, async (req, res) => {
     try {
         req.session.destroy()
         items = []
+        
         res.render("login")
     } catch (error) {
         console.log(error.message)
@@ -78,54 +78,14 @@ function findCost(counterObject) {
 }
 
 
-// items.push(req.body.item) 
-// const counter = createCounter(items);
-// const counterObject = Object.fromEntries(counter);
-// console.log(counterObject)
-// const total = findCost(counterObject)
-// console.log(total)
-
 app.post("/home", async (req, res) => {
-    console.log(req.session.user_id);
-
     const userId = req.session.user_id;
-
-    // Find existing user cart or create a new one
-    let userCart = await details.findOne({
-        userId
-    });
-    if (!userCart) {
-        const ccart = {
-            userId: req.session.user_id
-        };
-        userCart = new details(ccart);
-        await userCart.save();
-    }
-
     items.push(req.body.item);
     const counter = createCounter(items);
     const counterObject = Object.fromEntries(counter);
-    console.log(counterObject);
+    console.log(counterObject) 
     const total = findCost(counterObject);
-    console.log(total);
-
-    // Update the fruit counts in the user's cart
-    for (const key in counterObject) {
-        if (counterObject.hasOwnProperty(key)) {
-            const [fruit, index] = key.split('|');
-            const count = counterObject[key];
-            userCart[`${fruit}Count`] = count;
-        }
-    }
-
-    // Save the updated cart back to the database
-    try {
-        const updatedCart = await userCart.save();
-        console.log('Updated cart:', updatedCart);
-    } catch (error) {
-        console.error('Error updating cart:', error);
-    }
-    res.render("home");
+    res.render("home", {total});
 });
 
 

@@ -10,24 +10,35 @@
   <hr>
   <h1>Cart</h1>
 
+  
+  <h2>Total Cost: <span id="totalCost">{{ total }}</span></h2>
+
+
   <form action="/home" method="post">
     <button type="submit" name="item" value="banana|-2">-</button> Banana <button type="submit" name="item"
       value="banana|2">+</button>
-    {{ !-- Quantity : {{counter.banana.[2] }}   --}}
     <hr>
     <button type="submit" name="item" value="mango|-3">-</button> Mango <button type="submit" name="item"
       value="mango|3">+</button>
-    {{ !-- Quantity : {{counter.mango.[3] }} --}}
     <hr>
     <button type="submit" name="item" value="apple|-1">-</button> Apple <button type="submit" name="item"
       value="apple|1">+</button>
-    {{ !-- Quantity : {{counter.apple.[1] }} --}}
     <hr>
     <button type="submit" name="item" value="kiwi|-4">-</button> Kiwi <button type="submit" name="item"
       value="kiwi|4">+</button>
-    {{ !-- Quantity : {{counter.kiwi.[4] }} --}}
     <hr>
+
   </form>
+
+
+
+
+
+
+    {{!-- Quantity : {{counter.banana.[2] }} --}}
+    {{!-- {{ !-- Quantity : {{counter.mango.[3] }} --}} 
+    {{!-- {{ !-- Quantity : {{counter.apple.[1] }} --}} 
+    {{!-- {{ !-- Quantity : {{counter.kiwi.[4] }} --}} 
   {{!-- 
      <h2>Current Counts:</h2>
   <ul>
