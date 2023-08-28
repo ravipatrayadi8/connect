@@ -7,10 +7,10 @@ const session = require("express-session")
 const sessionSecret = "temp"
 const auth = require("../middleware/auth")
 
-const {
-    Collection
-} = require('collectionsjs')
 let items = []
+let counter = {}
+let counterObject = {}
+
 const app = express()
 
 app.use(session({
@@ -34,6 +34,10 @@ app.get("/home", auth.isLogin, (req, res) => {
 app.get("/login", auth.isLogout, (req, res) => {
     res.render("login");
 });
+
+app.get("/payment" , auth.isLogin , (req,res) =>{
+    res.render("payment") ; 
+})
 
 app.get("/logout", auth.isLogin, async (req, res) => {
     try {
@@ -77,12 +81,16 @@ function findCost(counterObject) {
     return cost;
 }
 
-
+app.post("/payment" , async(req,res) => {
+    console.log(req.body.pay)
+    res.render("confirm")
+})
+ 
 app.post("/home", async (req, res) => {
     const userId = req.session.user_id;
     items.push(req.body.item);
-    const counter = createCounter(items);
-    const counterObject = Object.fromEntries(counter);
+    counter = createCounter(items);
+    counterObject = Object.fromEntries(counter);
     console.log(counterObject) 
     const total = findCost(counterObject);
     res.render("home", {total});
