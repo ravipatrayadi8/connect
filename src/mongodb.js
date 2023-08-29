@@ -50,7 +50,11 @@ const cartSchema = new mongoose.Schema({
     type:Number , 
     default: 0 
   },
-  paystat:{
+  payType:{
+    type:String ,
+    required: true 
+  } ,
+  payStat:{
     type: Boolean , 
     default: false
   }

@@ -15,38 +15,23 @@
 
 
   <form action="/home" method="post">
-    <button type="submit" name="item" value="banana|-2">-</button> Banana <button type="submit" name="item"
+    <button type="submit" name="item" value="banana|-2">-</button> Banana - $2 <button type="submit" name="item"
       value="banana|2">+</button>
     <hr>
-    <button type="submit" name="item" value="mango|-3">-</button> Mango <button type="submit" name="item"
+    <button type="submit" name="item" value="mango|-3">-</button> Mango - $3 <button type="submit" name="item"
       value="mango|3">+</button>
     <hr>
-    <button type="submit" name="item" value="apple|-1">-</button> Apple <button type="submit" name="item"
+    <button type="submit" name="item" value="apple|-1">-</button> Apple - $1 <button type="submit" name="item"
       value="apple|1">+</button>
     <hr>
-    <button type="submit" name="item" value="kiwi|-4">-</button> Kiwi <button type="submit" name="item"
+    <button type="submit" name="item" value="kiwi|-4">-</button> Kiwi - $4 <button type="submit" name="item"
       value="kiwi|4">+</button>
     <hr>
   </form>
 
 
-  <h2>Pay: <a href="/payment"> ${{ total }}</a></h2>
 
-    {{!-- Quantity : {{counter.banana.[2] }} --}}
-    {{!-- {{ !-- Quantity : {{counter.mango.[3] }} --}} 
-    {{!-- {{ !-- Quantity : {{counter.apple.[1] }} --}} 
-    {{!-- {{ !-- Quantity : {{counter.kiwi.[4] }} --}} 
-  {{!-- 
-     <h2>Current Counts:</h2>
-  <ul>
-    {{ #each counter }}
-      <li>
-        {{ #each this }}
-          {{ @key }}: {{ this }}
-        {{ /each }}
-      </li>
-    {{ /each }}
-  </ul> --}}
+  <h2>Pay: <a href="/payment"> ${{ total }}</a></h2>
 
   <a href="/logout">Log Out</a>
 </body>
