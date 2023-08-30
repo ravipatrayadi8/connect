@@ -57,6 +57,28 @@ app.get("/signup", auth.isLogout, (req, res) => {
     res.render("signup")
 })
 
+app.get("/super" , auth.isLogin , (req,res) =>{
+    res.render("super")
+})
+
+app.get("/clerks", async (req, res) => {
+    try {
+      const logins = await log.find();
+      res.render("clerks", { logins });
+    } catch (error) {
+      console.error(error.message);
+    }
+  });
+
+app.get("/sales" , (req,res) =>{
+    res.render("sales") 
+})
+
+
+hbs.registerHelper('isEqual', function (value1, value2, options) {
+    return value1 === value2 ? options.fn(this) : options.inverse(this);
+})
+
 function createCounter(items) {
     const counter = new Map()
 
@@ -84,6 +106,18 @@ function findCost(counterObject) {
     return cost
 }
 
+app.post('/update-password', async (req, res) => {
+    try {
+      const username = req.body.username;
+      const newPassword = req.body.password;
+  
+      await log.updateOne({ name: username }, { $set: { password: newPassword } });
+      res.redirect('/clerks') 
+    } catch (error) {
+      console.error(error)
+    }
+  })
+
 app.post("/payment" , async(req ,res) =>{
     const tpay = req.body.pay
 
@@ -104,16 +138,17 @@ app.post("/payment" , async(req ,res) =>{
     await details.insertMany([payedcart])
     res.render("confirm")
 })
- 
+
 app.post("/home", async (req, res) => {
     const userId = req.session.user_id
     items.push(req.body.item)
     counter = createCounter(items)
     counterObject = Object.fromEntries(counter)
     total = findCost(counterObject)
-    // console.log(counterObject)
+    console.log(counterObject)
     res.render("home", {total} )
 })
+
 
 app.post("/signup", async (req, res) => {
 
@@ -148,6 +183,7 @@ app.post("/login", async (req, res) => {
         res.send("Can't find the User")
     }
 })
+
 
 app.listen(3000, () => {
     console.log("port connected")

@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>User Data</title>
+    <style>
+        table {
+            border-collapse: collapse;
+            width: 100%;
+            margin-top: 20px;
+        }
+        th, td {
+            border: 1px solid black;
+            padding: 8px;
+            text-align: left;
+        }
+        input[type="password"] {
+            width: 100%;
+        }
+    </style>
+</head>
+<body>
+    <h1>User Data</h1>
+    <table>
+        <thead>
+            <tr>
+                <th>Name</th>
+                <th>Password</th>
+                <th>UserType</th>
+                <th>Object ID</th>
+            </tr>
+        </thead>
+        <tbody>
+            {{#each logins}}
+                {{#isEqual this.userType "clerk"}}
+                    <tr>
+                        <td>{{this.name}}</td>
+                        <td>
+                            <input type="text" name="password" value="{{this.password}}">
+                        </td>
+                        <td>{{this.userType}}</td>
+                        <td>{{this._id}}</td>
+                    </tr>
+                {{/isEqual}}
+            {{/each}}
+        </tbody>
+    </table>
+    <hr>
+    <h1>Change Password</h1>
+    <form action="/update-password" method="post">
+    <input type="text" name="username" placeholder="Username">
+    <input type="text" name="password" placeholder="New Password">
+    <button type="submit">Save Password</button>
+    </form>
+
+
+</body>
+</html>
