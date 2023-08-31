@@ -3,36 +3,68 @@
 <head>
   <title>Cart Data</title>
   <style>
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #f7f7f7;
+      margin: 0;
+      padding: 0;
+    }
+
+    h1 {
+      background-color: #333;
+      color: #fff;
+      padding: 10px;
+      margin: 0;
+    }
+
+    .container {
+      max-width: 800px;
+      margin: 20px auto;
+      padding: 20px;
+      background-color: #fff;
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+      border-radius: 5px;
+    }
+
     table {
       border-collapse: collapse;
       width: 100%;
+      margin-top: 20px;
     }
+
     th, td {
-      border: 1px solid black;
-      padding: 8px;
+      border: 1px solid #ddd;
+      padding: 10px;
       text-align: left;
     }
+
     th {
       background-color: #f2f2f2;
+    }
+
+    tfoot td {
+      background-color: #f2f2f2;
+      font-weight: bold;
     }
   </style>
 </head>
 <body>
   <h1>Cart Data</h1>
-  <table>
-    <thead>
-      <tr>
-        <th>User Name</th>
-        <th>Banana Count</th>
-        <th>Mango Count</th>
-        <th>Apple Count</th>
-        <th>Kiwi Count</th>
-        <th>Total Cost</th>
-        <th>Pay Type</th>
-      </tr>
-    </thead>
-    <tbody>
-      {{#each carts}}
+  <div class="container">
+    <table>
+      <thead>
+        <tr>
+          <th>User Name</th>
+          <th>Banana Count</th>
+          <th>Mango Count</th>
+          <th>Apple Count</th>
+          <th>Kiwi Count</th>
+          <th>Total Cost</th>
+          <th>Pay Type</th>
+        </tr>
+      </thead>
+      <tbody>
+        {{#each carts}}
       <tr>
         <td>{{userName}}</td>
         <td>{{bananaCount}}</td>
@@ -43,18 +75,21 @@
         <td>{{payType}}</td>
       </tr>
       {{/each}}
-    </tbody>
-        <tfoot>
-      <tr>
-        <td><strong>Total:</strong></td>
-        <td>{{sumFruitQuantity 'bananaCount'}}</td>
-        <td>{{sumFruitQuantity 'mangoCount'}}</td>
-        <td>{{sumFruitQuantity 'appleCount'}}</td>
-        <td>{{sumFruitQuantity 'kiwiCount'}}</td>
-        <td>{{sumTotalCost}}</td>
-        <td>Payed</td>
-      </tr>
-    </tfoot>
-  </table>
+      </tbody>
+      <tfoot>
+        <tr>
+          <td><strong>Total:</strong></td>
+          <td>{{sumFruitQuantity 'bananaCount'}}</td>
+          <td>{{sumFruitQuantity 'mangoCount'}}</td>
+          <td>{{sumFruitQuantity 'appleCount'}}</td>
+          <td>{{sumFruitQuantity 'kiwiCount'}}</td>
+          <td>{{sumTotalCost}}</td>
+          <td>Payed</td>
+        </tr>
+      </tfoot>
+    </table>
+  </div>
 </body>
 </html>
+
+

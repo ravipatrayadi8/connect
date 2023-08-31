@@ -43,7 +43,7 @@ const isClerk = async (req, res, next) => {
         if (user && user.userType === 'clerk') {
             next();
         } else {
-            res.render('login'); // Redirect to login if not a clerk user
+            res.render('login'); 
         }
     } catch (error) {
         console.log(error.message);
@@ -75,7 +75,8 @@ const isLogout = async (req, res, next) => {
 }
 
 
-app.get("/", isLogout, (req, res) => {
+app.get("/" , ( req, res) => {
+    req.session.destroy()
     res.render("login")
 })
 
