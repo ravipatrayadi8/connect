@@ -26,7 +26,9 @@ app.set("view engine", "hbs")
 
 const isSuper = async (req, res, next) => {
     try {
-        const user = await log.findOne({ _id: req.session.user_id });
+        const user = await log.findOne({
+            _id: req.session.user_id
+        });
         if (user && user.userType === 'super') {
             next();
         } else {
@@ -39,21 +41,23 @@ const isSuper = async (req, res, next) => {
 
 const isClerk = async (req, res, next) => {
     try {
-        const user = await log.findOne({ _id: req.session.user_id });
+        const user = await log.findOne({
+            _id: req.session.user_id
+        });
         if (user && user.userType === 'clerk') {
             next();
         } else {
-            res.render('login'); 
+            res.render('login');
         }
     } catch (error) {
         console.log(error.message);
     }
 };
 
-  
+
 const isLogin = async (req, res, next) => {
     try {
-        if (!req.session.user_id){
+        if (!req.session.user_id) {
             res.render('login')
         }
         next()
@@ -75,12 +79,12 @@ const isLogout = async (req, res, next) => {
 }
 
 
-app.get("/" , ( req, res) => {
+app.get("/", (req, res) => {
     req.session.destroy()
     res.render("login")
 })
 
-app.get("/home", isLogin , isClerk ,  (req, res) => {
+app.get("/home", isLogin, isClerk, (req, res) => {
     res.render("home")
 })
 
@@ -88,7 +92,7 @@ app.get("/login", isLogout, (req, res) => {
     res.render("login")
 })
 
-app.get("/payment", isLogin, isClerk,   (req, res) => {
+app.get("/payment", isLogin, isClerk, (req, res) => {
     res.render("payment")
 })
 
@@ -107,11 +111,11 @@ app.get("/signup", isLogout, (req, res) => {
     res.render("signup")
 })
 
-app.get("/super", isLogin, isSuper , (req, res) => {
+app.get("/super", isLogin, isSuper, (req, res) => {
     res.render("super")
 })
 
-app.get("/clerks", isLogin , isSuper ,  async (req, res) => {
+app.get("/clerks", isLogin, isSuper, async (req, res) => {
     try {
         const logins = await log.find();
         res.render("clerks", {
@@ -123,7 +127,7 @@ app.get("/clerks", isLogin , isSuper ,  async (req, res) => {
 });
 
 
-app.get('/sales', isLogin , isSuper , async (req, res) => {
+app.get('/sales', isLogin, isSuper, async (req, res) => {
     try {
         const carts = await details.find();
         res.render('sales', {
@@ -246,7 +250,7 @@ app.post("/login", async (req, res) => {
         })
         if (user.password === req.body.password) {
             if (user.userType === 'super') {
-                req.session.user_id = user._id 
+                req.session.user_id = user._id
                 res.render("super")
             } else if (user.userType === 'clerk') {
                 req.session.user_id = user._id

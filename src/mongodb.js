@@ -30,13 +30,13 @@ const cartSchema = new mongoose.Schema({
     ref: 'Logincred',
     required: true
   },
-  userName:{
-    type:String , 
-    required : true 
-  } , 
+  userName: {
+    type: String,
+    required: true
+  },
   bananaCount: {
     type: Number,
-    default: 0 
+    default: 0
   },
   mangoCount: {
     type: Number,
@@ -50,16 +50,16 @@ const cartSchema = new mongoose.Schema({
     type: Number,
     default: 0
   },
-  totalCost:{
-    type:Number , 
-    default: 0 
+  totalCost: {
+    type: Number,
+    default: 0
   },
-  payType:{
-    type:String ,
-    required: true 
-  } ,
-  payStat:{
-    type: Boolean , 
+  payType: {
+    type: String,
+    required: true
+  },
+  payStat: {
+    type: Boolean,
     default: false
   }
 });
