@@ -1,3 +1,4 @@
+
 const isLogin = async (req, res, next) => {
     try {
         if (req.session.user_id) {} else {
@@ -9,6 +10,23 @@ const isLogin = async (req, res, next) => {
     }
 }
 
+
+function checkRole(role) {
+    return async (req, res, next) => {
+      try {
+        const userId = req.session.user_id
+        console.log(userId)
+        const user = log.findOne({})
+        if (user && user.userType === role) {
+          next()
+        } else {
+          res.status(403).send('Access denied');
+        }
+      } catch (error) {
+        res.status(500).send('Internal Server Error');
+      }
+    };
+  }
 
 const isLogout = async (req, res, next) => {
     try {
@@ -24,5 +42,5 @@ const isLogout = async (req, res, next) => {
 
 module.exports = {
     isLogin,
-    isLogout
+    isLogout,
 }

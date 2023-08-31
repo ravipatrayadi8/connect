@@ -30,6 +30,10 @@ const cartSchema = new mongoose.Schema({
     ref: 'Logincred',
     required: true
   },
+  userName:{
+    type:String , 
+    required : true 
+  } , 
   bananaCount: {
     type: Number,
     default: 0 
